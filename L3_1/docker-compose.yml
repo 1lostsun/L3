@@ -1,0 +1,56 @@
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: L3_1/Dockerfile
+    container_name: l3_app
+    environment:
+      - REDIS_ADDR=redis:6379
+      - REDIS_PASS=
+      - REDIS_DB=0
+      - RABBIT_URL=amqp://guest:guest@rabbitmq:5672/
+      - RABBIT_RETRIES=10
+    depends_on:
+      - redis
+      - rabbitmq
+    ports:
+      - "8081:8080"
+    networks:
+      - app-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: l3_redis
+    restart: always
+    command: [ "redis-server", "--appendonly", "yes", "--appendfsync", "everysec" ]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: l3_rabbitmq
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  redis_data:
+    driver: local
+  rabbitmq_data:
+    driver: local
