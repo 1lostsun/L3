@@ -101,7 +101,6 @@ func (uc *UseCase) GetCommentsTree(parent *string) ([]*entity.Comment, error) {
 			result = append(result, comment)
 		}
 
-		fmt.Println(result)
 		return result, nil
 	}
 

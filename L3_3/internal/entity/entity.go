@@ -3,11 +3,11 @@ package entity
 import "time"
 
 type Comment struct {
-	ID           string
-	Text         string
-	Date         time.Time
-	Parent       *string
-	CommentsTree []*Comment
+	ID           string     `json:"id"`
+	Text         string     `json:"text"`
+	Date         time.Time  `json:"date"`
+	Parent       *string    `json:"parent"`
+	CommentsTree []*Comment `json:"commentsTree"`
 }
 
 type Request struct {

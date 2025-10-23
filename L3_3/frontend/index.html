@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Комментарии</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h1>Комментарии</h1>
+
+<div class="controls">
+    <input type="text" id="searchInput" placeholder="Поиск по комментариям...">
+    <button id="searchBtn">Найти</button>
+
+    <select id="sortSelect">
+        <option value="desc">Сначала новые</option>
+        <option value="asc">Сначала старые</option>
+    </select>
+</div>
+
+<div id="commentsContainer"></div>
+
+<div class="pagination">
+    <button id="prevPage">← Назад</button>
+    <span id="pageInfo"></span>
+    <button id="nextPage">Вперёд →</button>
+</div>
+
+<div class="add-comment">
+    <textarea id="newCommentText" placeholder="Напиши комментарий..."></textarea>
+    <button id="addCommentBtn">Добавить</button>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
