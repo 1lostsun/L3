@@ -27,7 +27,7 @@ func New(uc *usecase.UseCase) *Handler {
 func (h *Handler) InitRoutes() {
 
 	h.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"}, // можешь ограничить, например []string{"http://localhost:5500"}
+		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "DELETE", "PUT", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type"},
 		ExposeHeaders:    []string{"Content-Length"},
