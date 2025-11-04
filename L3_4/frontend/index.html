@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Image Compressor</title>
+    <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+<main class="container">
+    <h1>Image Compressor</h1>
+    <form id="uploadForm" class="card">
+        <div class="field">
+            <label for="file">Файл</label>
+            <input type="file" id="file" name="file" accept="image/*" required />
+        </div>
+
+        <div class="grid">
+            <div class="field">
+                <label for="width">Ширина (px)</label>
+                <input type="number" id="width" min="0" placeholder="напр. 800" />
+            </div>
+            <div class="field">
+                <label for="height">Высота (px)</label>
+                <input type="number" id="height" min="0" placeholder="напр. 600" />
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="watermark">Водяной знак (текст)</label>
+            <input type="text" id="watermark" placeholder="необязательно" />
+        </div>
+
+        <button type="submit" class="btn">Загрузить</button>
+    </form>
+
+    <section id="statusSection" class="card hidden"></section>
+    <section id="resultSection" class="card hidden">
+        <h2>Результат</h2>
+        <img id="resultImg" alt="Результат" />
+        <div class="actions">
+            <button id="deleteBtn" class="btn danger">Удалить</button>
+        </div>
+    </section>
+</main>
+
+<script src="./app.js"></script>
+</body>
+</html>
+
+

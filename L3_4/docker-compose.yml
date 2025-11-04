@@ -1,0 +1,103 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    image: l3-backend:latest
+    container_name: l3-backend
+    environment:
+      - PORT=:8080
+      - KAFKA_PORT=kafka:9092
+      - KAFKA_TOPIC=images
+      - KAFKA_GROUP_ID=images-group
+      - REDIS_ADDR=redis:6379
+      - REDIS_PASS=
+      - REDIS_DB=0
+    depends_on:
+      - redis
+      - minio
+      - kafka
+      - kafka-init
+    ports:
+      - "8080:8080"
+    networks:
+      - appnet
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: l3-frontend:latest
+    container_name: l3-frontend
+    depends_on:
+      - backend
+    ports:
+      - "8081:80"
+    networks:
+      - appnet
+
+  redis:
+    image: redis:7-alpine
+    container_name: l3-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - appnet
+
+  minio:
+    image: minio/minio:RELEASE.2024-09-22T00-33-43Z
+    container_name: l3-minio
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - appnet
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.1
+    container_name: l3-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - appnet
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: l3-kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    ports:
+      - "9092:9092"
+    networks:
+      - appnet
+
+  kafka-init:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: l3-kafka-init
+    depends_on:
+      - kafka
+    entrypoint: ["/bin/bash","-lc","kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic images --replication-factor 1 --partitions 1 && echo 'topic ready'"]
+    networks:
+      - appnet
+
+networks:
+  appnet:
+    driver: bridge
+
+
